@@ -16,6 +16,8 @@ user_base = {   0 : [1, 2, 3, 4, 8],
 
 infected = []
 to_be_infected = []
+sub_graphs = [[]]
+
 
 def total_infection_pass():
     global to_be_infected
@@ -41,4 +43,44 @@ def total_infection():
                 break
     print "infected " + str(len(infected) * 100.0/len(user_base)) + "%" + " users"
 
-total_infection()
+def get_a_sub_graph():
+    ret = []
+    to_be_added = []
+    node_to_start_with = random.choice([node for node in user_base.keys() if node not in to_be_added and not exists_in_subgraph(node)])
+    to_be_added.append(node_to_start_with)
+    while len(to_be_added) > 0:
+        node = to_be_added.pop(0)
+        ret.append(node)
+        to_be_added = to_be_added + [user for user in user_base[node] if user not in ret and user not in to_be_added]
+    return ret
+    
+def exists_in_subgraph(node):
+    for sub_graph in sub_graphs:
+        if node in sub_graph:
+            return True
+    return False
+    
+def sub_graphs_completed():
+    num_of_nodes = 0
+    for sub_graph in sub_graphs:
+        num_of_nodes += len(sub_graph)
+    if num_of_nodes == len(user_base):
+        return True
+    return False
+
+def get_sub_graph_to_infect(num_of_users):
+    diff = float("inf")
+    ret = []
+    for sub_graph in sub_graphs:
+        if abs(len(sub_graph) - num_of_users) < diff:
+            diff = abs(len(sub_graph) - num_of_users)
+            ret = sub_graph
+    return ret
+
+def limited_infection(num_of_users):
+    while not sub_graphs_completed():
+        sub_graphs.append(get_a_sub_graph())
+    sub_graph_to_infect = get_sub_graph_to_infect(num_of_users)
+    for user in sub_graph_to_infect:
+        infect(user)
+    print "infected " + str(len(infected)) + " users"
