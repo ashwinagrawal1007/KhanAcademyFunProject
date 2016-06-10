@@ -1,23 +1,9 @@
 import random
 
-user_base = {   0 : [1, 2, 3, 4, 8],
-                1 : [0, 2, 5, 6, 7],
-                2 : [0, 1, 4, 8, 9],
-                3 : [0, 4, 5, 6, 9],
-                4 : [0, 2, 3, 5, 7],
-                5 : [1, 3, 4, 6, 9],
-                6 : [1, 3, 5, 7, 8],
-                7 : [1, 4, 6],
-                8 : [0, 2, 6, 9],
-                9 : [2, 3, 5, 8],
-                10 : [11],
-                11 : [10]
-}
-
+user_base = {}
 infected = []
 to_be_infected = []
 sub_graphs = [[]]
-
 
 def total_infection_pass():
     global to_be_infected
@@ -29,7 +15,7 @@ def total_infection_pass():
 
 def infect(user):
     infected.append(user)
-    
+
 def is_infected(user):
     if user in infected:
         return True
@@ -39,15 +25,17 @@ def select_user_to_start():
     user_to_start_with = random.choice([user for user in user_base.keys() if not is_infected(user)])
     to_be_infected.append(user_to_start_with)
 
-def total_infection():
+def total_infection(full_infection = False):
     print "------------Total Infection-----------------"
     while len(infected) != len(user_base):
         total_infection_pass()
         if len(infected) != len(user_base):
-            proceed = raw_input("infected " + str(len(infected)) + " users, left with " + str(len(user_base) - len(infected)) + " more users, proceed furthur? [yes/no] ")
-            if proceed == "no":
-                break
+            if not full_infection:
+                proceed = raw_input("infected " + str(len(infected)) + " users, left with " + str(len(user_base) - len(infected)) + " more users, proceed furthur? [yes/no] ")
+                if proceed == "no":
+                    break
     print "infected " + str(len(infected) * 100.0/len(user_base)) + "%" + " users in total after total_infection"
+    return len(infected)
 
 def get_a_sub_graph():
     ret = []
@@ -60,13 +48,13 @@ def get_a_sub_graph():
         ret.append(node)
         to_be_added = to_be_added + [user for user in user_base[node] if user not in ret and user not in to_be_added]
     return ret
-    
+
 def exists_in_subgraph(node):
     for sub_graph in sub_graphs:
         if node in sub_graph:
             return True
     return False
-    
+
 def sub_graphs_completed():
     num_of_nodes = 0
     for sub_graph in sub_graphs:
@@ -102,3 +90,4 @@ def limited_infection(num_of_users, strict = False):
                 if idx == len(sub_graph_to_infect) -1:
                     infection_completed = True
     print "infected " + str(len(infected) * 100.0/len(user_base)) + "%" + " users in total after limited_infection"
+    return len(infected)
