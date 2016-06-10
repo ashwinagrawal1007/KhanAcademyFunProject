@@ -4,12 +4,12 @@ This a very interesting problem, for releasing features with a/b testing to cosi
 
 ## Installation
 
-No other libraries except standard python libraries are used. 
+No other libraries except standard python libraries are used to build the solution.
 
 ## Tests
 
 ```sh
-python infection.py
+python test.py
 ```
 
-Test cases are present in the infection.py, more test cases can be added and can be used to test against the solution. All the test cases follow the spec to ensure correctness of the solution.
+Test cases are present in the test.py, more test cases can be added and can be used to test against the solution. All the test cases follow the spec to ensure correctness of the solution.
